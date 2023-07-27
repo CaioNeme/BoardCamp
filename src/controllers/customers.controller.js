@@ -50,3 +50,41 @@ export async function getCustomerByID(req, res) {
     res.status(500).send(err.message);
   }
 }
+
+export async function putCustomers(req, res) {
+  const { id } = req.params;
+  const { name, phone, cpf, birthday } = req.body;
+  const validation = customersSchemas.validate(req.body);
+
+  if (validation.error) {
+    const errors = validation.error.details.map((details) => details.message);
+    return res.status(400).send(errors[0]);
+  }
+
+  try {
+    const customer = await db.query(
+      ` SELECT * FROM customers WHERE cpf = '${cpf}'; `
+    );
+
+    if (customer.rowCount != 1) {
+      return res.status(409).send("Esse usuário não está cadastrado");
+    }
+
+    if (customer.rows[0].id != id) {
+      return res
+        .status(409)
+        .send("Você não pode alterar dados de outras contas");
+    } else {
+      await db.query(
+        `UPDATE customers
+        SET name = $1, phone = $2, cpf = $3, birthday = $4
+        WHERE id = $5`,
+        [name, phone, cpf, birthday, id]
+      );
+      return res.sendStatus(200);
+    }
+    res.sendStatus(200);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+}
