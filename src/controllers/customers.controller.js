@@ -37,3 +37,16 @@ export async function postCustomers(req, res) {
     res.status(500).send(err.message);
   }
 }
+
+export async function getCustomerByID(req, res) {
+  const { id } = req.params;
+  try {
+    const user = await db.query(`SELECT * FROM customers WHERE id = ${id}`);
+    if (user.rowCount != 1) {
+      return res.status(404).send("Usuário não encontrado");
+    }
+    res.send(user.rows);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+}
