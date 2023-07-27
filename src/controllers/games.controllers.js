@@ -1,5 +1,5 @@
 import { db } from "../database/database.connectiuon.js";
-import { gamesSchema } from "../schemas/games.schema.js";
+import { gamesSchema } from "../schemas/games.schemas.js";
 
 export async function getGames(req, res) {
   try {
@@ -15,16 +15,14 @@ export async function postGames(req, res) {
   const validation = gamesSchema.validate(req.body);
   if (validation.error) {
     const errors = validation.error.details.map((details) => details.message);
-    console.log("erro de validação ", errors);
-    return res.sendStatus(400);
+    return res.status(400).send(errors[0]);
   }
   try {
     const game = await db.query(
       ` SELECT * FROM games WHERE name = '${name}'; `
     );
-    console.log(game.rowCount);
     if (game.rowCount != 0) {
-      return res.sendStatus(409);
+      return res.status(409).send("Esse BoardGame já está cadastrado");
     } else {
       await db.query(
         `INSERT INTO games ("name", "image", "stockTotal", "pricePerDay" ) VALUES ($1, $2, $3, $4);`,
