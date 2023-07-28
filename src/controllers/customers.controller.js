@@ -98,6 +98,10 @@ export async function putCustomers(req, res) {
     //   return res.sendStatus(200);
     // }
 
+    if (customer.rows[0].id != id) {
+      return res.statusStatus(409);
+    }
+
     if (customer.rowCount != 1) {
       return res.sendStatus(409);
     } else {
