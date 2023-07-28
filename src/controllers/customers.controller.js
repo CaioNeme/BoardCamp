@@ -1,5 +1,5 @@
 import { db } from "../database/database.connectiuon.js";
-import { customersSchemas } from "../schemas/customers.schemas.js";
+import { customersSchema } from "../schemas/customers.schemas.js";
 
 export async function getCustomers(req, res) {
   try {
@@ -12,7 +12,7 @@ export async function getCustomers(req, res) {
 
 export async function postCustomers(req, res) {
   const { name, phone, cpf, birthday } = req.body;
-  const validation = customersSchemas.validate(req.body);
+  const validation = customersSchema.validate(req.body);
 
   if (validation.error) {
     const errors = validation.error.details.map((details) => details.message);
@@ -54,7 +54,7 @@ export async function getCustomerByID(req, res) {
 export async function putCustomers(req, res) {
   const { id } = req.params;
   const { name, phone, cpf, birthday } = req.body;
-  const validation = customersSchemas.validate(req.body);
+  const validation = customersSchema.validate(req.body);
 
   if (validation.error) {
     const errors = validation.error.details.map((details) => details.message);
