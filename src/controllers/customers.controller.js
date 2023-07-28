@@ -50,15 +50,13 @@ export async function getCustomerByID(req, res) {
     if (user.rowCount != 1) {
       return res.status(404).send("Usuário não encontrado");
     }
-    const userReformat = [
-      {
-        id: user.rows[0].id,
-        name: user.rows[0].name,
-        phone: user.rows[0].phone,
-        cpf: user.rows[0].cpf,
-        birthday: dayjs(user.rows[0].birthday).format("YYYY-MM-DD"),
-      },
-    ];
+    const userReformat = {
+      id: user.rows[0].id,
+      name: user.rows[0].name,
+      phone: user.rows[0].phone,
+      cpf: user.rows[0].cpf,
+      birthday: dayjs(user.rows[0].birthday).format("YYYY-MM-DD"),
+    };
     res.send(userReformat);
   } catch (err) {
     res.status(500).send(err.message);
@@ -85,12 +83,14 @@ export async function putCustomers(req, res) {
     if (customer.rowCount != 1) {
       return res.sendStatus(409);
     }
+
     const users = await db.query(`SELECT * FROM customers WHERE cpf = $1;`, [
       cpf,
     ]);
     if (users.rows.id != id) {
       return res.sendStatus(409);
     }
+
     await db.query(
       `UPDATE customers
           SET name = $1, phone = $2, cpf = $3, birthday = $4
