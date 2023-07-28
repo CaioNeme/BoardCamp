@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { db } from "../database/database.connectiuon.js";
 import { customersSchema } from "../schemas/customers.schemas.js";
 
@@ -29,7 +30,7 @@ export async function postCustomers(req, res) {
     } else {
       await db.query(
         `INSERT INTO customers ("name", "phone", "cpf", "birthday" ) VALUES ($1, $2, $3, $4);`,
-        [name, phone, cpf, birthday]
+        [name, phone, cpf, dayjs(birthday).format("YYYY-MM-DD")]
       );
       res.sendStatus(201);
     }
@@ -66,9 +67,9 @@ export async function putCustomers(req, res) {
       ` SELECT * FROM customers WHERE cpf = '${cpf}'; `
     );
 
-    if (customer.rowCount != 1) {
-      return res.status(409).send("Esse usuário não está cadastrado");
-    }
+    // if (customer.rowCount != 1) {
+    //   return res.status(409).send("Esse usuário não está cadastrado");
+    // }
 
     if (customer.rows[0].id != id) {
       return res
