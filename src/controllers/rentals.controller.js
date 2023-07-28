@@ -67,7 +67,7 @@ export async function postRentals(req, res) {
     if (game.rowCount != 1) {
       return res.status(400).send("Jogo não encontrado!");
     }
-    if (game.rows[0].stockTotal == 0) {
+    if (game.rows[0].stockTotal === 0) {
       return res.sendStatus(400);
     }
 
