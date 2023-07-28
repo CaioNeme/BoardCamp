@@ -77,18 +77,18 @@ export async function putCustomers(req, res) {
     const customer = await db.query(` SELECT * FROM customers WHERE id = $1;`, [
       id,
     ]);
-    if (customer.rows[0].id != id) {
-      return res.status(409).send("(customer.rows[0].id != id)");
+    if (customer.rows[0].id != Number(id)) {
+      return res.statusStatus(409);
     }
     if (customer.rowCount != 1) {
-      return res.status(409).send("(customer.rowCount != 1)");
+      return res.sendStatus(409);
     }
 
     const users = await db.query(`SELECT * FROM customers WHERE cpf = $1;`, [
       cpf,
     ]);
     if (users.rows.id != id) {
-      return res.status(409).send("(users.rows.id != id)");
+      return res.sendStatus(409);
     }
 
     await db.query(
