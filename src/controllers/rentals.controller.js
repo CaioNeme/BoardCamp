@@ -36,6 +36,9 @@ export async function postRentals(req, res) {
     if (game.rowCount != 1) {
       return res.status(400).send("Jogo não encontrado!");
     }
+    if (game.rows[0].stockTotal === 0) {
+      return res.sendStatus(400);
+    }
 
     const customer = await db.query(
       `SELECT * FROM customers WHERE id = '${customerId}'; `
@@ -58,6 +61,10 @@ export async function postRentals(req, res) {
         delayFee,
       ]
     );
+    await db.query(`UPDATE game SET stockTotal=$1 WHERE id = $2;`, [
+      game.rows[0].stockTotal - 1,
+      gameId,
+    ]);
 
     res.sendStatus(201);
   } catch (err) {
