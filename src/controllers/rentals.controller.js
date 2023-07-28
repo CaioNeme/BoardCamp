@@ -12,6 +12,7 @@ export async function getRentals(req, res) {
     JOIN customers ON customers.id = rentals."customerId"
     JOIN games ON games.id = rentals."gameId";
   `);
+
     res.send(result.rows);
   } catch (err) {
     res.status(500).send(err.message);
@@ -83,10 +84,14 @@ export async function postRentalsByIdReturn(req, res) {
       returnDate,
       id,
     ]);
+    console.log(rental.rows);
+    // const game = await db.query(`SELECT * FROM games WHERE id= $1;`, [
+    //   rental.rows,
+    // ]);
 
     const rentalDateB = dayjs(rental.rows[0].rentDate).format("YYYY-MM-DD");
-    const dayDalay = dayjs(returnDate).diff(dayjs(rentalDateB), "d");
-    const delayFee = dayDalay * rental.rows[0].originalPrice * 2;
+    const dayDalay = dayjs(returnDate).diff(dayjs(rentalDateB), "days");
+    const delayFee = dayDalay * rental.rows[0].originalPrice;
 
     if (dayDalay > 0) {
       await db.query(`UPDATE rentals SET "delayFee"=$1 WHERE id = $2`, [
