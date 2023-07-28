@@ -122,14 +122,14 @@ export async function postRentalsByIdReturn(req, res) {
       returnDate,
       id,
     ]);
-    console.log(rental.rows);
-    // const game = await db.query(`SELECT * FROM games WHERE id= $1;`, [
-    //   rental.rows,
-    // ]);
+
+    const game = await db.query(`SELECT * FROM games WHERE id= $1;`, [
+      rental.rows[0].gameId,
+    ]);
 
     const rentalDateB = dayjs(rental.rows[0].rentDate).format("YYYY-MM-DD");
     const dayDalay = dayjs(returnDate).diff(dayjs(rentalDateB), "days");
-    const delayFee = dayDalay * rental.rows[0].originalPrice;
+    const delayFee = dayDalay * game.rows[0].pricePerDay;
 
     if (dayDalay > 0) {
       await db.query(`UPDATE rentals SET "delayFee"=$1 WHERE id = $2`, [
