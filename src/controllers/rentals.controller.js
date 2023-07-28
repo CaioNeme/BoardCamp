@@ -64,7 +64,7 @@ export async function postRentals(req, res) {
   }
 }
 
-export async function postRendalsByIdReturn(req, res) {
+export async function postRentalsByIdReturn(req, res) {
   const { id } = req.params;
 
   try {
@@ -103,8 +103,24 @@ export async function postRendalsByIdReturn(req, res) {
   }
 }
 
-export async function deleteRendal(req, res) {
+export async function deleteRental(req, res) {
   const { id } = req.params;
+
+  try {
+    const rental = await db.query(`SELECT * FROM rentals WHERE id = $1;`, [id]);
+    if (rental.rowCount != 1) {
+      return res
+        .status(404)
+        .send("Não achamos o seu aluguel por favor confira e tente novamente");
+    }
+    if (!rental.rows[0].returnDate) {
+      return res.status(400).send("O aluguel não foi finalizado");
+    }
+
+    await db.query(`DELETE FROM rentals WHERE id=$1;`, [id]);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 
   res.sendStatus(200);
 }

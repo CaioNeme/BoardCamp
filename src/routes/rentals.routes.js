@@ -1,8 +1,8 @@
 import { Router } from "express";
 import {
-  deleteRendal,
+  deleteRental,
   getRentals,
-  postRendalsByIdReturn,
+  postRentalsByIdReturn,
   postRentals,
 } from "../controllers/rentals.controller.js";
 
@@ -10,7 +10,7 @@ const rentalsRouters = Router();
 
 rentalsRouters.get("/rentals", getRentals);
 rentalsRouters.post("/rentals", postRentals);
-rentalsRouters.post("/rentals/:id/return", postRendalsByIdReturn);
-rentalsRouters.delete("/retals/:id", deleteRendal);
+rentalsRouters.post("/rentals/:id/return", postRentalsByIdReturn);
+rentalsRouters.delete("/rentals/:id", deleteRental);
 
 export default rentalsRouters;
