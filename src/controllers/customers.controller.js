@@ -87,7 +87,8 @@ export async function putCustomers(req, res) {
     const users = await db.query(`SELECT * FROM customers WHERE cpf = $1;`, [
       cpf,
     ]);
-    if (users.rows.id != id) {
+    console.log(users.rows);
+    if (users.rows[0].id != id || users.rowCount > 1) {
       return res.sendStatus(409);
     }
 
