@@ -78,17 +78,17 @@ export async function putCustomers(req, res) {
       id,
     ]);
     if (customer.rows[0].id != id) {
-      return res.statusStatus(409);
+      return res.status(409).send("(customer.rows[0].id != id)");
     }
     if (customer.rowCount != 1) {
-      return res.sendStatus(409);
+      return res.status(409).send("(customer.rowCount != 1)");
     }
 
     const users = await db.query(`SELECT * FROM customers WHERE cpf = $1;`, [
       cpf,
     ]);
     if (users.rows.id != id) {
-      return res.sendStatus(409);
+      return res.status(409).send("(users.rows.id != id)");
     }
 
     await db.query(
@@ -97,6 +97,7 @@ export async function putCustomers(req, res) {
           WHERE id = $5`,
       [name, phone, cpf, birthday, id]
     );
+
     res.sendStatus(200);
   } catch (err) {
     res.status(500).send(err.message);
