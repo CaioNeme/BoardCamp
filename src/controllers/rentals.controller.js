@@ -131,6 +131,7 @@ export async function postRentalsByIdReturn(req, res) {
     const dayDalay = dayjs(returnDate).diff(dayjs(rentalDateB), "days");
     const delayFee = dayDalay * game.rows[0].pricePerDay;
     console.log(rental.rows);
+    console.log(rental.rows[0].daysRented);
     if (dayDalay > rental.rows[0].daysRented) {
       await db.query(`UPDATE rentals SET "delayFee"=0 WHERE id = $1`, [id]);
     } else {
