@@ -52,7 +52,8 @@ export async function getRentals(req, res) {
 
 export async function postRentals(req, res) {
   const { customerId, gameId, daysRented } = req.body;
-  const rentDate = dayjs().format("YYYY-MM-DD");
+  // const rentDate = dayjs().format("YYYY-MM-DD");
+  const rentDate = "2023-07-18";
   const returnDate = null;
   const delayFee = null;
 
@@ -130,15 +131,14 @@ export async function postRentalsByIdReturn(req, res) {
     const rentalDateB = dayjs(rental.rows[0].rentDate).format("YYYY-MM-DD");
     const dayDalay = dayjs(returnDate).diff(dayjs(rentalDateB), "days");
     const delayFee = dayDalay * game.rows[0].pricePerDay;
-    console.log(rental.rows);
-    console.log(rental.rows[0].daysRented);
+
     if (dayDalay > rental.rows[0].daysRented) {
-      await db.query(`UPDATE rentals SET "delayFee"=0 WHERE id = $1`, [id]);
-    } else {
       await db.query(`UPDATE rentals SET "delayFee"=$1 WHERE id = $2`, [
         delayFee,
         id,
       ]);
+    } else {
+      await db.query(`UPDATE rentals SET "delayFee"=0 WHERE id = $1`, [id]);
     }
 
     res.sendStatus(200);
