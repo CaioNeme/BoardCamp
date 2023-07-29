@@ -64,8 +64,6 @@ export async function getCustomerByID(req, res) {
 }
 
 export async function putCustomers(req, res) {
-  const { id } = req.params;
-  const { name, phone, cpf, birthday } = req.body;
   const validation = customersSchema.validate(req.body);
 
   if (validation.error) {
@@ -74,23 +72,15 @@ export async function putCustomers(req, res) {
   }
 
   try {
-    const customer = await db.query(` SELECT * FROM customers WHERE id = $1;`, [
-      id,
-    ]);
-    if (customer.rows[0].id != Number(id)) {
-      return res.statusStatus(409);
-    }
-    if (customer.rowCount != 1) {
-      return res.sendStatus(409);
-    }
+    const { id } = req.params;
+    const { name, phone, cpf, birthday } = req.body;
+    const customers = await db.query(
+      ` SELECT * FROM customers WHERE id = $1;`,
+      [id]
+    );
 
-    const users = await db.query(`SELECT * FROM customers WHERE cpf = $1;`, [
-      cpf,
-    ]);
-    console.log(users.rows);
-    if (users.rows[0].id != id || users.rowCount > 1) {
+    if (customers.rowCount > 0 && customers.rows[0].id !== Number(id))
       return res.sendStatus(409);
-    }
 
     await db.query(
       `UPDATE customers
