@@ -79,6 +79,12 @@ export async function putCustomers(req, res) {
       [id]
     );
 
+    if (customers.rows[0].id != Number(id)) {
+      return res.statusStatus(409);
+    }
+    if (customers.rowCount === 0) {
+      return res.sendStatus(409);
+    }
     if (customers.rowCount > 0 && customers.rows[0].id !== Number(id))
       return res.sendStatus(409);
 
