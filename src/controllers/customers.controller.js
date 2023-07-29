@@ -78,14 +78,7 @@ export async function putCustomers(req, res) {
       ` SELECT * FROM customers WHERE id = $1;`,
       [id]
     );
-
-    if (customers.rows[0].id != Number(id)) {
-      return res.statusStatus(409);
-    }
-    if (customers.rowCount === 0) {
-      return res.sendStatus(409);
-    }
-    if (customers.rowCount > 0 && customers.rows[0].id !== Number(id))
+    if (customers.rowCount < 1 && customers.rows[0].id !== Number(id))
       return res.sendStatus(409);
 
     await db.query(
